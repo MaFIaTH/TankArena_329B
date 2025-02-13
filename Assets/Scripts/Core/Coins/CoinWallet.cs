@@ -13,5 +13,9 @@ public class CoinWallet : NetworkBehaviour
          if (!IsServer) return;
          TotalCoins.Value += coinValue;
     }
-    
+
+    public void SpendCoins(int costToFire)
+    {
+        TotalCoins.Value -= costToFire;
+    }
 }

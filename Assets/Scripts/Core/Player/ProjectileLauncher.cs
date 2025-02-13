@@ -5,6 +5,7 @@ public class ProjectileLauncher : NetworkBehaviour
 {
     [Header("References")]
     [SerializeField] private InputReader inputReader;
+    [SerializeField] private CoinWallet coinWallet;
     [SerializeField] private Transform projectileSpawnPoint;
     [SerializeField] private GameObject serverProjectilePrefab;
     [SerializeField] private GameObject clientProjectilePrefab;
@@ -15,9 +16,11 @@ public class ProjectileLauncher : NetworkBehaviour
     [SerializeField] private float projectileSpeed;
     [SerializeField] private float fireRate;
     [SerializeField] private float muzzleFlashDuration;
+    [SerializeField] private int costToFire;
     
     private bool _shouldFire;
-    private float _previousFireTime;
+    //private float _previousFireTime;
+    private float _timer;
     private float _muzzleFlashTimer;
     
     public override void OnNetworkSpawn()
@@ -55,11 +58,16 @@ public class ProjectileLauncher : NetworkBehaviour
     {
         UpdateFlash();
         if (!IsOwner) return;
+        if (_timer > 0)
+        {
+            _timer -= Time.deltaTime;
+            return;
+        }
+        if (coinWallet.TotalCoins.Value < costToFire) return;
         if (!_shouldFire) return;
-        if (Time.time < (1 / fireRate) + _previousFireTime) return;
         PrimaryFireServerRpc(projectileSpawnPoint.position, projectileSpawnPoint.up);
         SpawnDummyProjectile(projectileSpawnPoint.position, projectileSpawnPoint.up);
-        _previousFireTime = Time.time;
+        _timer = 1 / fireRate;
     }
     
     private void UpdateFlash()
@@ -75,6 +83,8 @@ public class ProjectileLauncher : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void PrimaryFireServerRpc(Vector3 position, Vector3 direction)
     {
+        if (coinWallet.TotalCoins.Value < costToFire) return;
+        coinWallet.SpendCoins(costToFire);
         var projectile = Instantiate(serverProjectilePrefab, position, Quaternion.identity);
         projectile.transform.up = direction;
         Physics2D.IgnoreCollision(playerCollider, projectile.GetComponent<Collider2D>());
