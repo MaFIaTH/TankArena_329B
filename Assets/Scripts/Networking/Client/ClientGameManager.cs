@@ -9,7 +9,7 @@ using Unity.Services.Relay.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ClientGameManager : MonoBehaviour
+public class ClientGameManager
 {
     private JoinAllocation allocation;
     private const string MenuSceneName = "Menu";
