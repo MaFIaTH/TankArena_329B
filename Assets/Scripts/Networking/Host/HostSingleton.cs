@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -27,5 +28,10 @@ public class HostSingleton : MonoBehaviour
     public async Task CreateHost()
     {
         GameManager = new HostGameManager();
+    }
+
+    private void OnDestroy()
+    {
+        GameManager?.Dispose();
     }
 }
