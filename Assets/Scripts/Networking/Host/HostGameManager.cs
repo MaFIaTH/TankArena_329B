@@ -18,7 +18,7 @@ public class HostGameManager : IDisposable
     private Allocation allocation;
     private string _joinCode;
     private string _lobbyId;
-    private NetworkServer _networkServer;
+    public NetworkServer NetworkServer { get; private set; }
     private const int MaxConnections = 20;
     private const string GameSceneName = "Game";
     private const string JoinCodeKey = "JoinCode";
@@ -74,11 +74,12 @@ public class HostGameManager : IDisposable
             Debug.LogWarning(e);
             return;
         }
-        _networkServer = new NetworkServer(NetworkManager.Singleton);
+        NetworkServer = new NetworkServer(NetworkManager.Singleton);
         UserData userData = new UserData
         {
             username = PlayerPrefs.GetString(NameSelector.PlayerNameKey, "Missing Name"), 
-            userAuthId = AuthenticationService.Instance.PlayerId
+            userAuthId = AuthenticationService.Instance.PlayerId,
+            userColorIndex = PlayerPrefs.GetInt(ColorSelector.PlayerColorKey, 0)
         };
         string payload = JsonUtility.ToJson(userData);
         byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload);
@@ -113,6 +114,6 @@ public class HostGameManager : IDisposable
             _lobbyId = string.Empty;
         }
         
-        _networkServer?.Dispose();
+        NetworkServer?.Dispose();
     }
 }

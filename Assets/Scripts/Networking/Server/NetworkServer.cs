@@ -39,6 +39,8 @@ public class NetworkServer : IDisposable
         _authIdToUserData[userData.userAuthId] = userData;
         Debug.Log($"User {userData.username} is trying to connect");
         response.Approved = true;
+        response.Position = SpawnPoint.GetRandomSpawnPos();
+        response.Rotation = Quaternion.identity;
         response.CreatePlayerObject = true;
     }
 
@@ -52,5 +54,14 @@ public class NetworkServer : IDisposable
         {
             _networkManager.Shutdown();
         }
+    }
+    
+    public UserData GetUserDataByClientId(ulong clientId)
+    {
+        if(_clientIdToAuth.TryGetValue(clientId,out string authId))
+        {
+            return _authIdToUserData.TryGetValue(authId,out UserData data) ? data : null;
+        }
+        return null;
     }
 }
