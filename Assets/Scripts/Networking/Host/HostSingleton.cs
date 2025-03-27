@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Unity.Netcode;
 using UnityEngine;
 
 public class HostSingleton : MonoBehaviour
@@ -15,7 +16,7 @@ public class HostSingleton : MonoBehaviour
             if (_instance != null) return _instance;
             _instance = FindFirstObjectByType<HostSingleton>();
             if (_instance != null) return _instance;
-            Debug.Log($"No singleton {_instance.GetType()} in scene!");
+            //Debug.Log($"No singleton {_instance.GetType()} in scene!");
             return null;
         }
     }
@@ -25,9 +26,9 @@ public class HostSingleton : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public async Task CreateHost()
+    public async Task CreateHost(NetworkObject playerPrefab)
     {
-        GameManager = new HostGameManager();
+        GameManager = new HostGameManager(playerPrefab);
     }
 
     private void OnDestroy()

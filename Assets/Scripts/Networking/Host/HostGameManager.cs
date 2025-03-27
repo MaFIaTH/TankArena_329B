@@ -16,12 +16,18 @@ using UnityEngine.SceneManagement;
 public class HostGameManager : IDisposable
 {
     private Allocation allocation;
+    private NetworkObject _playerPrefeb;
     private string _joinCode;
+    public string JoinCode => _joinCode;
     private string _lobbyId;
     public NetworkServer NetworkServer { get; private set; }
     private const int MaxConnections = 20;
     private const string GameSceneName = "Game";
-    private const string JoinCodeKey = "JoinCode";
+
+    public HostGameManager(NetworkObject playerPrefeb)
+    {
+        _playerPrefeb = playerPrefeb;
+    }
 
     public async Task StartHostAsync()
     {
@@ -38,8 +44,6 @@ public class HostGameManager : IDisposable
         try
         {
             _joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
-            Debug.Log(_joinCode);
-            PlayerPrefs.SetString(JoinCodeKey, _joinCode);
         }
         catch (Exception e)
         {
@@ -74,7 +78,7 @@ public class HostGameManager : IDisposable
             Debug.LogWarning(e);
             return;
         }
-        NetworkServer = new NetworkServer(NetworkManager.Singleton);
+        NetworkServer = new NetworkServer(NetworkManager.Singleton, _playerPrefeb);
         UserData userData = new UserData
         {
             username = PlayerPrefs.GetString(NameSelector.PlayerNameKey, "Missing Name"), 

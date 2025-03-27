@@ -1,16 +1,37 @@
+using TMPro;
+using Unity.Collections;
+using Unity.Netcode;
 using UnityEngine;
 
 public class LeaderboardEntityDisplay : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private TMP_Text displayText;
+    [SerializeField] private Color myColor;
+    
+    private FixedString32Bytes playerName;
+    public ulong CliendId { get; private set; }
+    public int Coins { get; private set; }
+    
+    public void Initialise(ulong clientId, FixedString32Bytes playerName, int coins)
     {
-        
+        CliendId = clientId;
+        this.playerName = playerName;
+        if (clientId == NetworkManager.Singleton.LocalClientId)
+        {
+            displayText.color = myColor;
+        }
+        UpdateCoins(coins);
+    }
+    
+    public void UpdateCoins(int coins)
+    {
+        Coins = coins;
+        UpdateText();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void UpdateText()
     {
-        
+        displayText.text = $"{transform.GetSiblingIndex() + 1}. {playerName} ({Coins})";
     }
-}
+    
+} 

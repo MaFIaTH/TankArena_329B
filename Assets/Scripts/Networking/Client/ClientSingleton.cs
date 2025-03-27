@@ -14,7 +14,7 @@ public class ClientSingleton : MonoBehaviour
             if (_instance != null) return _instance;
             _instance = FindFirstObjectByType<ClientSingleton>();
             if (_instance != null) return _instance;
-            Debug.Log($"No singleton {_instance.GetType()} in scene!");
+            //Debug.Log($"No singleton {_instance.GetType()} in scene!");
             return null;
         }
     }
