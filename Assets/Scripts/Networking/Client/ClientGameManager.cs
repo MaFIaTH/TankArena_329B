@@ -14,18 +14,54 @@ public class ClientGameManager : IDisposable
 {
     private JoinAllocation allocation;
     private NetworkClient _networkClient;
+    private MatchplayMatchmaker _matchmaker;
+    private UserData _userData;
     private const string MenuSceneName = "Menu";
     public async Task<bool> InitAsync()
     {
         await UnityServices.InitializeAsync();
         _networkClient = new NetworkClient(NetworkManager.Singleton);
+        _matchmaker = new MatchplayMatchmaker();
         AuthState authState = await AuthenticationWrapper.DoAuth();
-        return authState == AuthState.Authenticated;
+        if (authState != AuthState.Authenticated) return false;
+        _userData = new UserData
+        {
+            username = PlayerPrefs.GetString(NameSelector.PlayerNameKey, "Missing Name"), 
+            userAuthId = AuthenticationService.Instance.PlayerId,
+            userColorIndex = PlayerPrefs.GetInt(ColorSelector.PlayerColorKey, 0)
+        };
+        return true;
+    }
+
+    public async void MatchmakeAsync(Action<MatchmakerPollingResult> onMatch)
+    {
+        if (_matchmaker.IsMatchmaking) return;
+        var matchResult = await GetMatchAsync();
+        onMatch?.Invoke(matchResult);
+    }
+
+    private async Task<MatchmakerPollingResult> GetMatchAsync()
+    {
+        var matchResult = await _matchmaker.Matchmake(_userData);
+
+        if (matchResult.result is MatchmakerPollingResult.Success)
+        {
+            StartClient(matchResult.ip, matchResult.port);
+        }
+
+        return matchResult.result;
     }
 
     public void GoToMenu()
     {
         SceneManager.LoadScene(MenuSceneName);
+    }
+
+    public void StartClient(string ip, int port)
+    {
+        var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+        transport.SetConnectionData(ip, (ushort)port);
+        ConnectClient();
     }
 
     public async Task StartClientAsync(string joinCode)
@@ -40,17 +76,16 @@ public class ClientGameManager : IDisposable
             return;
         }
         UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-        UserData userData = new UserData
-        {
-            username = PlayerPrefs.GetString(NameSelector.PlayerNameKey, "Missing Name"), 
-            userAuthId = AuthenticationService.Instance.PlayerId,
-            userColorIndex = PlayerPrefs.GetInt(ColorSelector.PlayerColorKey, 0)
-        };
-        string payload = JsonUtility.ToJson(userData);
-        byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload);
-        NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
         RelayServerData relayServerData = allocation.ToRelayServerData("dtls");
         transport.SetRelayServerData(relayServerData);
+        ConnectClient();
+    }
+
+    private void ConnectClient()
+    {
+        string payload = JsonUtility.ToJson(_userData);
+        byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload);
+        NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
         NetworkManager.Singleton.StartClient();
     }
 
@@ -62,5 +97,10 @@ public class ClientGameManager : IDisposable
     public void Disconnect()
     {
         _networkClient?.Disconnect();
+    }
+
+    public async Task CancelMatchmaking()
+    {
+        await _matchmaker.CancelMatchmaking();
     }
 }
