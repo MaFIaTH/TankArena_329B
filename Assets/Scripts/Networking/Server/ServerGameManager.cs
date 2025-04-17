@@ -79,7 +79,9 @@ public class ServerGameManager : IDisposable
     
     private void UserJoined(UserData user)
     {
+        if (user == null) return;
         Team team = backfiller.GetTeamByUserId(user.userAuthId);
+        if (team == null) return;
         if (!teamIdToTeamIndex.TryGetValue(team.TeamId, out int teamIndex))
         {
             teamIndex = teamIdToTeamIndex.Count;

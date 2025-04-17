@@ -74,8 +74,8 @@ public class MatchplayBackfiller : IDisposable
             return MatchPlayerCount;
         }
 
-        MatchProperties.Players.Remove(playerToRemove);
-        GetTeamByUserId(userId).PlayerIds.Remove(userId);
+        MatchProperties?.Players?.Remove(playerToRemove);
+        GetTeamByUserId(userId)?.PlayerIds?.Remove(userId);
         localDataDirty = true;
 
         return MatchPlayerCount;
