@@ -20,6 +20,7 @@ public class TankPlayer : NetworkBehaviour
 
     public NetworkVariable<FixedString32Bytes> PlayerName = new();
     public NetworkVariable<int> PlayerColorIndex = new();
+    public NetworkVariable<int> TeamIndex = new();
 
     public static event Action<TankPlayer> OnPlayerSpawned;
     public static event Action<TankPlayer> OnPlayerDespawned;
@@ -40,6 +41,7 @@ public class TankPlayer : NetworkBehaviour
             
             PlayerName.Value = userData.username;
             PlayerColorIndex.Value = userData.userColorIndex;
+            TeamIndex.Value = userData.teamIndex;
             OnPlayerSpawned?.Invoke(this);
         }
         if (IsOwner)

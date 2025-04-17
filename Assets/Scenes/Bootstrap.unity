@@ -227,7 +227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.76618373, b: 0, a: 1}
+  m_Color: {r: 0, g: 1, b: 0.19680619, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -393,7 +393,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.036886618, b: 0, a: 1}
+  m_Color: {r: 1, g: 0, b: 0.92309856, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -793,7 +793,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0.95985556, a: 1}
+  m_Color: {r: 0, g: 0.15068674, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -937,7 +937,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.18899345, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1429,7 +1429,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.16653156, g: 1, b: 0, a: 1}
+  m_Color: {r: 0.999694, g: 1, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1498,25 +1498,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a963e7294062cc4eab60859f4fcab2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  teamColorLookup: {fileID: 11400000, guid: 7450432b517fa3245b4b322c377ee556, type: 2}
   playerSprites:
   - {fileID: 228740441}
   - {fileID: 2060385470}
   selectionButton:
   - colorButton: {fileID: 440417451}
     selectionBox: {fileID: 1142670256}
-    color: {r: 0, g: 0.18899345, b: 1, a: 1}
+    color: {r: 1, g: 0, b: 0, a: 1}
   - colorButton: {fileID: 64889014}
     selectionBox: {fileID: 1025751242}
-    color: {r: 1, g: 0.036886618, b: 0, a: 1}
+    color: {r: 1, g: 0, b: 0.92309856, a: 1}
   - colorButton: {fileID: 351697550}
     selectionBox: {fileID: 70006159}
-    color: {r: 1, g: 0, b: 0.95985556, a: 1}
+    color: {r: 0, g: 0.15068674, b: 1, a: 1}
   - colorButton: {fileID: 15189140}
     selectionBox: {fileID: 1952167155}
-    color: {r: 1, g: 0.76618373, b: 0, a: 1}
+    color: {r: 0, g: 1, b: 0.19680619, a: 1}
   - colorButton: {fileID: 560342407}
     selectionBox: {fileID: 1916722748}
-    color: {r: 0.16653156, g: 1, b: 0, a: 1}
+    color: {r: 0.999694, g: 1, b: 0, a: 1}
   colorIndex: 0
 --- !u!1 &613581886
 GameObject:

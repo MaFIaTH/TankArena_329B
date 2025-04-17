@@ -15,7 +15,7 @@ public class ClientGameManager : IDisposable
     private JoinAllocation allocation;
     private NetworkClient _networkClient;
     private MatchplayMatchmaker _matchmaker;
-    private UserData _userData;
+    public UserData UserData { get; private set; }
     private const string MenuSceneName = "Menu";
     public async Task<bool> InitAsync()
     {
@@ -24,7 +24,7 @@ public class ClientGameManager : IDisposable
         _matchmaker = new MatchplayMatchmaker();
         AuthState authState = await AuthenticationWrapper.DoAuth();
         if (authState != AuthState.Authenticated) return false;
-        _userData = new UserData
+        UserData = new UserData
         {
             username = PlayerPrefs.GetString(NameSelector.PlayerNameKey, "Missing Name"), 
             userAuthId = AuthenticationService.Instance.PlayerId,
@@ -33,16 +33,17 @@ public class ClientGameManager : IDisposable
         return true;
     }
 
-    public async void MatchmakeAsync(Action<MatchmakerPollingResult> onMatch)
+    public async void MatchmakeAsync(bool team, Action<MatchmakerPollingResult> onMatch)
     {
         if (_matchmaker.IsMatchmaking) return;
+        UserData.userGamePreferences.gameQueue = team ? GameQueue.Team : GameQueue.Solo;
         var matchResult = await GetMatchAsync();
         onMatch?.Invoke(matchResult);
     }
 
     private async Task<MatchmakerPollingResult> GetMatchAsync()
     {
-        var matchResult = await _matchmaker.Matchmake(_userData);
+        var matchResult = await _matchmaker.Matchmake(UserData);
 
         if (matchResult.result is MatchmakerPollingResult.Success)
         {
@@ -83,7 +84,7 @@ public class ClientGameManager : IDisposable
 
     private void ConnectClient()
     {
-        string payload = JsonUtility.ToJson(_userData);
+        string payload = JsonUtility.ToJson(UserData);
         byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload);
         NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
         NetworkManager.Singleton.StartClient();

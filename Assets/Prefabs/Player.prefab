@@ -15833,6 +15833,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  player: {fileID: 1651623637949808230}
   inputReader: {fileID: 11400000, guid: 622f51b8aa809924a961b126ddd0e1c0, type: 2}
   coinWallet: {fileID: 7972264950863048608}
   projectileSpawnPoint: {fileID: 761896461499694237}
@@ -15941,6 +15942,8 @@ MonoBehaviour:
         byte0029: 0
   PlayerColorIndex:
     m_InternalValue: 0
+  TeamIndex:
+    m_InternalValue: 0
 --- !u!114 &3610028246107401671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15967,16 +15970,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ada030fd05b537e42b58cc1c860e2fec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  teamColorLookup: {fileID: 11400000, guid: 7450432b517fa3245b4b322c377ee556, type: 2}
   player: {fileID: 1651623637949808230}
   playerSprites:
   - {fileID: 2187178845380649441}
   - {fileID: 4531380168304320253}
-  tankColor:
-  - {r: 0, g: 0.1882353, b: 1, a: 1}
-  - {r: 1, g: 0.03529412, b: 0, a: 1}
-  - {r: 1, g: 0, b: 0.9607843, a: 1}
-  - {r: 1, g: 0.7647059, b: 0, a: 1}
-  - {r: 0.16470589, g: 1, b: 0, a: 1}
   colorIndex: 0
 --- !u!1 &7608979286982123161
 GameObject:

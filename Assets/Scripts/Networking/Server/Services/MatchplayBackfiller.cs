@@ -59,28 +59,10 @@ public class MatchplayBackfiller : IDisposable
         BackfillLoop();
     }
 
-    public void AddPlayerToMatch(UserData userData)
+    public Team GetTeamByUserId(string teamId)
     {
-        if (!IsBackfilling)
-        {
-            Debug.LogWarning("Can't add users to the backfill ticket before it's been created");
-            return;
-        }
-
-        if (GetPlayerById(userData.userAuthId) != null)
-        {
-            Debug.LogWarningFormat("User: {0} - {1} already in Match. Ignoring add.",
-                userData.username,
-                userData.userAuthId);
-                
-            return;
-        }
-
-        Player matchmakerPlayer = new Player(userData.userAuthId, userData.userGamePreferences);
-
-        MatchProperties.Players.Add(matchmakerPlayer);
-        MatchProperties.Teams[0].PlayerIds.Add(matchmakerPlayer.Id);
-        localDataDirty = true;
+        return MatchProperties.Teams.FirstOrDefault(
+            t => t.TeamId.Equals(teamId));
     }
 
     public int RemovePlayerFromMatch(string userId)
@@ -93,7 +75,7 @@ public class MatchplayBackfiller : IDisposable
         }
 
         MatchProperties.Players.Remove(playerToRemove);
-        MatchProperties.Teams[0].PlayerIds.Remove(userId);
+        GetTeamByUserId(userId).PlayerIds.Remove(userId);
         localDataDirty = true;
 
         return MatchPlayerCount;

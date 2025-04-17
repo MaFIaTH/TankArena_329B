@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class DealDamageOnContact : MonoBehaviour
 {
+    [SerializeField] private Projectile projectile;
     [SerializeField] private int damage = 5;
 
     private ulong _ownerClientId;
@@ -18,11 +19,12 @@ public class DealDamageOnContact : MonoBehaviour
         {
             return;
         }
-        if (other.attachedRigidbody.TryGetComponent(out NetworkObject networkIdentity))
+
+        if (projectile.TeamIndex != 0)
         {
-            if (networkIdentity.OwnerClientId == _ownerClientId)
+            if (other.TryGetComponent(out TankPlayer player))
             {
-                return;
+                if (player.TeamIndex.Value == projectile.TeamIndex) return;
             }
         }
         if (other.attachedRigidbody.TryGetComponent(out Health health))

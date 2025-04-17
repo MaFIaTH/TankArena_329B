@@ -13,6 +13,7 @@ public struct SelectionButton
 
 public class ColorSelector : MonoBehaviour
 {
+    [SerializeField] private TeamColorLookup teamColorLookup;
     [SerializeField] private SpriteRenderer[] playerSprites;
     [SerializeField] private SelectionButton[] selectionButton;
     [SerializeField] private int colorIndex = 0;
@@ -21,9 +22,10 @@ public class ColorSelector : MonoBehaviour
 
     public void OnValidate()
     {
-        foreach (SelectionButton select in selectionButton)
+        for (int i = 0; i < selectionButton.Length; i++)
         {
-            select.colorButton.color = select.color;
+            selectionButton[i].color = teamColorLookup.GetTeamColor(i) ?? Color.white;
+            selectionButton[i].colorButton.color = selectionButton[i].color;
         }
     }
     

@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 public class ProjectileLauncher : NetworkBehaviour
 {
     [Header("References")]
+    [SerializeField] private TankPlayer player;
     [SerializeField] private InputReader inputReader;
     [SerializeField] private CoinWallet coinWallet;
     [SerializeField] private Transform projectileSpawnPoint;
@@ -43,14 +44,17 @@ public class ProjectileLauncher : NetworkBehaviour
         _shouldFire = shouldFire;
     }
 
-    private void SpawnDummyProjectile(Vector3 position, Vector3 direction)
+    private void SpawnDummyProjectile(Vector3 position, Vector3 direction, int teamIndex)
     {
         muzzleFlash.SetActive(true);
         _muzzleFlashTimer = muzzleFlashDuration;
         var projectile = Instantiate(clientProjectilePrefab, position, Quaternion.identity);
         projectile.transform.up = direction;
         Physics2D.IgnoreCollision(playerCollider, projectile.GetComponent<Collider2D>());
-        
+        if (projectile.TryGetComponent(out Projectile projectileComponent))
+        {
+            projectileComponent.Initialize(player.TeamIndex.Value);
+        }
         if (projectile.TryGetComponent<Rigidbody2D>(out var rb))
         {
             rb.linearVelocity = rb.transform.up * projectileSpeed;
@@ -70,7 +74,7 @@ public class ProjectileLauncher : NetworkBehaviour
         if (coinWallet.TotalCoins.Value < costToFire) return;
         if (!_shouldFire) return;
         PrimaryFireServerRpc(projectileSpawnPoint.position, projectileSpawnPoint.up);
-        SpawnDummyProjectile(projectileSpawnPoint.position, projectileSpawnPoint.up);
+        SpawnDummyProjectile(projectileSpawnPoint.position, projectileSpawnPoint.up, player.TeamIndex.Value);
         _timer = 1 / fireRate;
     }
     
@@ -92,12 +96,12 @@ public class ProjectileLauncher : NetworkBehaviour
         var projectile = Instantiate(serverProjectilePrefab, position, Quaternion.identity);
         projectile.transform.up = direction;
         Physics2D.IgnoreCollision(playerCollider, projectile.GetComponent<Collider2D>());
-
-
-        if (projectile.TryGetComponent(out DealDamageOnContact dealDamage))
+        
+        if (projectile.TryGetComponent(out Projectile projectileComponent))
         {
-            dealDamage.SetOwner(OwnerClientId);
+            projectileComponent.Initialize(player.TeamIndex.Value);
         }
+        
         if (projectile.TryGetComponent<Rigidbody2D>(out var rb))
         {
             rb.linearVelocity = rb.transform.up * projectileSpeed;
@@ -110,6 +114,6 @@ public class ProjectileLauncher : NetworkBehaviour
     private void SpawnDummyProjectileClientRpc(Vector3 position, Vector3 direction)
     {
         if (IsOwner) return;
-        SpawnDummyProjectile(position, direction);
+        SpawnDummyProjectile(position, direction, player.TeamIndex.Value);
     }
 }
